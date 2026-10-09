@@ -119,9 +119,7 @@ task test_second_register_after_speed_change_fulleq::release_hdl_signals();
         end
     end
 uvm_hdl_release("top.u_wrapper_of_chip.PS9038.PS9038_IP1_TOP.u_ps9038_ip1_core.u_ps9038_ip1d_core.u_ps9038_ip1d_pcie_sw.u0_sw_up_8.u_sw_up_g5x8_pcie_wrapper.u_sw_up_g5x8_DWC_pcie_ctl.u_cx_phy_logical.u_cx_phy_logical_swpd.u_cdm.u_cdm_pl_reg.pl_g4r_194[6:5]");
-//uvm_hdl_release("top.u_wrapper_of_chip.PS9038.PS9038_IP1_TOP.u_ps9038_ip1_core.u_ps9038_ip1d_core.u_ps9038_ip1d_pcie_sw.u0_sw_up_8.u_sw_up_g5x8_pcie_wrapper.u_sw_up_g5x8_DWC_pcie_ctl.u_cx_phy_logical.u_cx_phy_logical_swpd.u_smlh.cfg_gen4_usp_send_8gt_eq_ts2_disable");
 
-//uvm_hdl_release("top.u_wrapper_of_chip.PS9038.PS9038_IP1_TOP.u_ps9038_ip1_core.u_ps9038_ip1d_core.u_ps9038_ip1d_pcie_sw.u0_sw_up_8.u_sw_up_g5x8_pcie_wrapper.u_sw_up_g5x8_DWC_pcie_ctl.u_cx_phy_logical.u_cx_phy_logical_swpd.u_smlh.cfg_gen5_usp_send_8gt_eq_ts2_disable");
 uvm_hdl_release("top.u_wrapper_of_chip.PS9038.PS9038_IP1_TOP.u_ps9038_ip1_core.u_ps9038_ip1d_core.u_ps9038_ip1d_pcie_sw.u0_sw_up_8.u_sw_up_g5x8_pcie_wrapper.u_sw_up_g5x8_DWC_pcie_ctl.u_cx_phy_logical.u_cx_phy_logical_swpd.u_cdm.u_cdm_pl_reg.pl_g5r_194");
 uvm_hdl_release("top.u_wrapper_of_chip.PS9038.PS9038_IP1_TOP.u_ps9038_ip1_core.u_ps9038_ip1d_core.u_ps9038_ip1d_pcie_sw.u0_sw_up_8.u_sw_up_g5x8_pcie_wrapper.u_sw_up_g5x8_DWC_pcie_ctl.u_cx_phy_logical.u_cx_phy_logical_swpd.u_cdm.cfg_tx_precode_req");
 
@@ -153,10 +151,9 @@ task test_second_register_after_speed_change_fulleq::run_phase(uvm_phase phase);
 int sw_dn_pl32g_ptr_arr[$] = '{`SW_DN_G5X8_HP_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR, `SW_DN_G5X4_PL32G_PTR,
 								`SW_DN_G5X4_PL32G_PTR, `SW_DN_G5X1_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR, 
 								`SW_DN_G5X4_PL32G_PTR, `SW_DN_G5X1_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR, 
-								`SW_DN_G5X4_PL32G_PTR, `SW_DN_G5X1_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR, `SW_DN_G5X1_PL32G_PTR, 
+								`SW_DN_G5X4_PL32G_PTR, `SW_DN_G5X1_PL32G_PTR, `SW_DN_G5X1_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR,
 								`SW_DN_G5X4_PL32G_PTR, `SW_DN_G5X1_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR,
 								`SW_DN_G5X4_PL32G_PTR, `SW_DN_G5X1_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR};
-
 
 
 	dyn_change_work_mode_config();
@@ -227,7 +224,7 @@ int sw_dn_pl32g_ptr_arr[$] = '{`SW_DN_G5X8_HP_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR, 
 				first_check = 1;
 			check_register_usp(cfg_tx_precode_req);
 										
-				rdata[9] = 1'b1;
+				rdata[9] = 1'b0;
 				write_reg_32(addr, rdata);
 				first_check = 0;
 			check_register_usp(cfg_tx_precode_req);
@@ -247,7 +244,7 @@ int sw_dn_pl32g_ptr_arr[$] = '{`SW_DN_G5X8_HP_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR, 
 				///////////////////////////////////////
 				addr = 20'h4000 + map_vip_idx_to_dsp_idx(sw_dev_idx) * 20'h1000 + 20'h700 + 20'h190;
 				if (map_vip_idx_to_dsp_idx(sw_dev_idx) > 11) begin
-					addr += 20'h4000;
+					addr += 20'h4000;    /////add 4000 not 5000, because have add 1000 in addr
 				end
 				read_reg_32(addr, rdata);
 				rdata[10] = 1'b1;
@@ -275,11 +272,10 @@ int sw_dn_pl32g_ptr_arr[$] = '{`SW_DN_G5X8_HP_PL32G_PTR, `SW_DN_G5X2_PL32G_PTR, 
 				first_check = 1;
 				check_register_dsp(map_vip_idx_to_dsp_idx(sw_dev_idx),cfg_tx_precode_req);
 				
-				rdata[9] = 1'b1;
+				rdata[9] = 1'b0;
 				write_reg_32(addr, rdata);
 				first_check = 0;
 				check_register_dsp(map_vip_idx_to_dsp_idx(sw_dev_idx),cfg_tx_precode_req);
-
 
 			end
 			//Check cfg_gen3_req_rst_eiec_disable,check all lane 1-28 for dsp
